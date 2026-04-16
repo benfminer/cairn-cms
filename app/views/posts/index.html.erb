@@ -1,0 +1,54 @@
+<% content_for :title, "Posts" %>
+
+<div class="max-w-5xl mx-auto mt-10 px-4">
+  <div class="flex items-center justify-between mb-6">
+    <h1 class="text-2xl font-bold text-gray-900">Posts</h1>
+    <%= link_to "New Post", new_post_path,
+          class: "px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 text-sm font-medium" %>
+  </div>
+
+  <% if @posts.empty? %>
+    <p class="text-gray-500 text-sm">No posts yet.</p>
+  <% else %>
+    <div class="overflow-x-auto rounded-lg border border-gray-200">
+      <table class="min-w-full divide-y divide-gray-200 text-sm">
+        <thead class="bg-gray-50">
+          <tr>
+            <th class="px-4 py-3 text-left font-semibold text-gray-600">Title</th>
+            <th class="px-4 py-3 text-left font-semibold text-gray-600">Status</th>
+            <th class="px-4 py-3 text-left font-semibold text-gray-600">Author</th>
+            <th class="px-4 py-3 text-left font-semibold text-gray-600">Created</th>
+            <th class="px-4 py-3"></th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-100 bg-white">
+          <% @posts.each do |post| %>
+            <tr class="hover:bg-gray-50">
+              <td class="px-4 py-3 font-medium text-gray-900">
+                <%= link_to post.title, post_path(post), class: "hover:underline" %>
+              </td>
+              <td class="px-4 py-3">
+                <span class="<%= status_badge_classes(post.status) %> px-2 py-1 rounded-full text-xs font-semibold">
+                  <%= post.status.humanize %>
+                </span>
+              </td>
+              <td class="px-4 py-3 text-gray-600"><%= post.author.email %></td>
+              <td class="px-4 py-3 text-gray-500"><%= post.created_at.strftime("%b %-d, %Y") %></td>
+              <td class="px-4 py-3 text-right space-x-2">
+                <% if policy(post).update? %>
+                  <%= link_to "Edit", edit_post_path(post),
+                        class: "text-blue-600 hover:underline text-xs" %>
+                <% end %>
+                <% if policy(post).destroy? %>
+                  <%= button_to "Delete", post_path(post), method: :delete,
+                        class: "text-red-600 hover:underline text-xs bg-transparent border-0 p-0 cursor-pointer",
+                        data: { turbo_confirm: "Delete this post?" } %>
+                <% end %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  <% end %>
+</div>

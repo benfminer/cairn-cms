@@ -2,8 +2,10 @@
   "name": "app",
   "private": "true",
   "dependencies": {
+    "@rails/actiontext": "^8.1.300",
     "@tailwindcss/cli": "^4.2.2",
-    "tailwindcss": "^4.2.2"
+    "tailwindcss": "^4.2.2",
+    "trix": "^2.1.18"
   },
   "scripts": {
     "build:css": "npx @tailwindcss/cli -i ./app/assets/stylesheets/application.tailwind.css -o ./app/assets/builds/application.css --minify"

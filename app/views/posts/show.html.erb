@@ -1,0 +1,28 @@
+<% content_for :title, @post.title %>
+
+<div class="max-w-3xl mx-auto mt-10 px-4">
+  <div class="mb-4 flex items-center gap-3">
+    <span class="<%= status_badge_classes(@post.status) %> px-2 py-1 rounded-full text-xs font-semibold">
+      <%= @post.status.humanize %>
+    </span>
+    <span class="text-sm text-gray-500">
+      by <%= @post.author.email %> &middot;
+      <%= @post.created_at.strftime("%B %-d, %Y") %>
+    </span>
+  </div>
+
+  <h1 class="text-3xl font-bold text-gray-900 mb-6"><%= @post.title %></h1>
+
+  <div class="prose max-w-none text-gray-800">
+    <%= @post.body %>
+  </div>
+
+  <div class="mt-8 flex gap-3">
+    <% if policy(@post).update? %>
+      <%= link_to "Edit", edit_post_path(@post),
+            class: "px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 text-sm" %>
+    <% end %>
+    <%= link_to "Back to Posts", posts_path,
+          class: "px-4 py-2 border border-gray-300 rounded hover:bg-gray-50 text-sm" %>
+  </div>
+</div>
