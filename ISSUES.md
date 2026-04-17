@@ -956,3 +956,113 @@ This ticket has two distinct parts: responsive column visibility (CSS only) and 
 7. Test at 768px–1023px in DevTools: Tags and Category columns should be hidden, Details button should appear, clicking it should reveal the sub-row.
 
 </details>
+
+---
+
+## Issue 21: Deploy Cairn CMS to production on Fly.io
+
+**Labels:** `feature`, `level:4`
+
+**Context:**
+The app is fully built. This is the graduation milestone — deploy it to production on Fly.io so it is accessible at a public URL. You will encounter real production problems: asset compilation, missing environment variables, an unmigrated database. Solving them is the point. When this ticket is done, you can share a working link.
+
+**Acceptance criteria:**
+- [ ] A `Dockerfile` exists and builds cleanly (`docker build .` succeeds locally)
+- [ ] `fly.toml` is committed with the app name and region set
+- [ ] Production Postgres cluster is provisioned and attached to the app
+- [ ] All required secrets are set via `fly secrets set`: `SECRET_KEY_BASE`, `RAILS_MASTER_KEY`
+- [ ] `rails db:migrate` has been run remotely — no pending migrations on production
+- [ ] The sign-in page loads at the public Fly URL with no 500 errors
+- [ ] Admin can sign in and reach the dashboard
+- [ ] `.github/workflows/ci.yml` runs RSpec on every PR against a Postgres service container
+- [ ] Deployed URL is recorded in README.md
+
+**Files likely involved:**
+- `Dockerfile` (new)
+- `fly.toml` (new)
+- `.github/workflows/ci.yml` (new)
+- `config/environments/production.rb`
+- `README.md`
+
+**Note:** Install the Fly CLI before starting: `brew install flyctl` then `fly auth login`. You will need a Fly.io account (free tier covers this app).
+
+---
+
+**Tier 1 — Nudge:** Run `fly launch` from the project root first — it detects Rails and generates a Dockerfile and fly.toml skeleton. Read both files before pushing anything.
+
+<details>
+<summary>I've been stuck for 20+ minutes — show me Tier 2</summary>
+
+Deployment has four independent failure modes, each with a distinct symptom:
+
+1. **Build fails** — Dockerfile issue. Run `docker build .` locally to reproduce. The most common Rails 7 issue is missing `RAILS_MASTER_KEY` at build time — pass it as a build arg or defer asset precompilation to runtime.
+2. **App crashes on start** — Missing env var or DB not connected. Check `fly logs` immediately after deploy. `DATABASE_URL` is set automatically when you attach a Fly Postgres cluster (`fly postgres attach`), but `SECRET_KEY_BASE` and `RAILS_MASTER_KEY` must be set manually via `fly secrets set SECRET_KEY_BASE=$(rails secret) RAILS_MASTER_KEY=$(cat config/master.key)`.
+3. **500 on every page** — Pending migrations. Run `fly ssh console -C "bin/rails db:migrate"` to migrate production. Verify with `fly ssh console -C "bin/rails db:version"`.
+4. **CI fails** — Postgres service container not configured. In `.github/workflows/ci.yml`, add a `services:` block with `postgres:15` and set `DATABASE_URL` as an env var pointing to `localhost:5432`.
+
+Tackle these in order: build → start → migrations → CI.
+
+</details>
+
+<details>
+<summary>I've been stuck for 45+ minutes — show me Tier 3 (full walkthrough)</summary>
+
+**Step 1 — Fly CLI and launch**
+1. Install and authenticate: `brew install flyctl && fly auth login`.
+2. From the project root, run `fly launch`. Accept the detected Rails config. Choose a region close to you. Say **no** to provisioning Postgres now (you will do it separately). Say **no** to deploying now.
+3. Inspect the generated `Dockerfile` and `fly.toml`. Commit both.
+
+**Step 2 — Provision Postgres**
+1. `fly postgres create --name cairn-cms-db` — create a Postgres 15 cluster. Note the connection string shown in the output.
+2. `fly postgres attach cairn-cms-db` — this sets `DATABASE_URL` automatically in your app's secrets.
+
+**Step 3 — Set remaining secrets**
+```bash
+fly secrets set SECRET_KEY_BASE=$(bundle exec rails secret)
+fly secrets set RAILS_MASTER_KEY=$(cat config/master.key)
+```
+
+**Step 4 — Deploy**
+1. `fly deploy` — this builds the Docker image and releases it. Watch the output for build errors.
+2. If the build fails on asset precompilation, add `ENV RAILS_ENV=production` and `ENV SECRET_KEY_BASE=placeholder` to the Dockerfile before the `RUN bundle exec rails assets:precompile` line. The placeholder value is only used at build time for asset fingerprinting.
+
+**Step 5 — Migrate and smoke test**
+1. `fly ssh console -C "bin/rails db:migrate"` — run migrations on production.
+2. `fly open` — opens the app in your browser. Sign in as admin@cairn.test / password (if you seeded) or create a user via console.
+3. Check `fly logs` for any errors during the smoke test.
+
+**Step 6 — GitHub Actions CI**
+Create `.github/workflows/ci.yml`:
+```yaml
+name: CI
+on: [pull_request]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_PASSWORD: postgres
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    env:
+      RAILS_ENV: test
+      DATABASE_URL: postgres://postgres:postgres@localhost:5432/cairn_test
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+      - run: bundle exec rails db:create db:schema:load
+      - run: bundle exec rspec
+```
+Push a PR to confirm CI runs.
+
+**Step 7 — Record the URL**
+Add the Fly URL to `README.md` under a "Live Demo" heading. Commit it as your graduation entry.
+
+</details>

@@ -90,14 +90,9 @@ Goal: ISSUES.md is complete with 20 tickets (15 core + 5 UI). Tickets filed as G
 - [x] Create CODEOWNERS file assigning fictional reviewers by area | agent: implementer | size: S
 - [x] Verify each ticket references real files from the built codebase | agent: reviewer | size: S
 
-## Milestone 8: Production Deployment
-Goal: The app is live on Fly.io. The learner can share a URL. CI runs tests on every PR.
+## Milestone 8: Production Deployment (Learner Graduation Milestone)
+Goal: The learner deploys the app to Fly.io and records a public URL. This milestone is NOT
+pre-built — it is GitHub Issue #22, filed as the final learner ticket. The learner hits real
+production problems (asset compilation, missing env vars, unmigrated DB) and solves them.
 
-- [ ] Write Dockerfile for Rails 7.2 with asset precompilation in production build | agent: implementer | size: M
-- [ ] Run `fly launch` to generate fly.toml; set app name and region | agent: implementer | size: S
-- [ ] Set production secrets via `fly secrets set`: SECRET_KEY_BASE, DATABASE_URL, RAILS_MASTER_KEY | agent: implementer | size: S
-- [ ] Provision Fly Postgres cluster and attach to app (`fly postgres create` + `fly postgres attach`) | agent: db-architect | size: S
-- [ ] Run migrations remotely (`fly ssh console -C "bin/rails db:migrate"`) and verify no 500s | agent: implementer | size: S
-- [ ] Create `.github/workflows/ci.yml`: run RSpec on every PR with Postgres service container | agent: implementer | size: M
-- [ ] Smoke test: sign-in page loads, admin can sign in, posts index renders, no errors in `fly logs` | agent: qa | size: S
-- [ ] Record deployed URL in README and LEARNING_LOG.md as graduation entry | agent: implementer | size: S
+- [x] File Issue 21 ("Deploy Cairn CMS to production on Fly.io") with tiered help | size: L
