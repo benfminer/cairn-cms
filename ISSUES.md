@@ -117,7 +117,7 @@ Add `published_at datetime` to the `posts` table. The column should be null by d
 **Files likely involved:**
 - `db/migrate/YYYYMMDDHHMMSS_add_published_at_to_posts.rb` (new)
 - `app/models/post.rb` (transition methods)
-- `app/views/admin/dashboard.html.erb` (display)
+- `app/views/admin/dashboard/show.html.erb` (display)
 
 ---
 
@@ -264,7 +264,7 @@ The post status badge (a colored span showing draft/in_review/published/archived
 - `app/views/shared/_status_badge.html.erb` (new)
 - `app/views/posts/index.html.erb`
 - `app/views/posts/show.html.erb`
-- `app/views/admin/dashboard.html.erb`
+- `app/views/admin/dashboard/show.html.erb`
 
 ---
 
@@ -785,7 +785,7 @@ The current status badges use light background + light text (e.g. `bg-yellow-200
 - [ ] Badge shape, padding, and font size are unchanged
 
 **Files likely involved:**
-- `app/views/shared/_status_badge.html.erb`
+- `app/views/shared/_status_badge.html.erb` (created in Issue 6 — complete that first)
 
 ---
 
@@ -875,7 +875,7 @@ The admin dashboard renders a table of recent posts. On a fresh install (before 
 - [ ] Empty state spans all table columns so it does not break table layout
 
 **Files likely involved:**
-- `app/views/admin/dashboard.html.erb`
+- `app/views/admin/dashboard/show.html.erb`
 
 ---
 

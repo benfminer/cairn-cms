@@ -66,29 +66,29 @@ Goal: Posts can have one Category and many Tags. Editor/Admin manage categories 
 ## Milestone 5: Soft Deletes and Seed Data
 Goal: Posts are never hard-deleted. A `discarded_at` column gates all queries. Seeds produce edge-case data. Learner encounters the scope leak bug via seed data.
 
-- [ ] Migration: add `discarded_at` datetime to posts; add index | agent: db-architect | size: S
-- [ ] Add `discard!`, `undiscard!`, `discarded?` methods to Post; add default scope excluding discarded records | agent: implementer | size: S
-- [ ] Update PostsController destroy action to soft-delete; add admin-only undiscard action | agent: implementer | size: S
-- [ ] Extend PostPolicy: only admin can undiscard; destroy permitted per existing rules | agent: implementer | size: S
-- [ ] Write realistic seed data: 3 users, 25 posts in mixed states (5 discarded, 3 in_review, 10 published, 7 draft), 4 categories, 8 tags | agent: implementer | size: M
-- [ ] QA M5: discarded posts invisible on index, admin undiscard restores post, seeds load cleanly | agent: qa | size: S
+- [x] Migration: add `discarded_at` datetime to posts; add index | agent: db-architect | size: S
+- [x] Add `discard!`, `undiscard!`, `discarded?` methods to Post; add default scope excluding discarded records | agent: implementer | size: S
+- [x] Update PostsController destroy action to soft-delete; add admin-only undiscard action | agent: implementer | size: S
+- [x] Extend PostPolicy: only admin can undiscard; destroy permitted per existing rules | agent: implementer | size: S
+- [x] Write realistic seed data: 3 users, 25 posts in mixed states (5 discarded, 3 in_review, 10 published, 7 draft), 4 categories, 8 tags | agent: implementer | size: M
+- [x] QA M5: discarded posts invisible on index, admin undiscard restores post, seeds load cleanly | agent: qa | size: S
 
 ## Milestone 6: ActiveStorage Image Attachments
 Goal: Posts can have a cover image. Image is displayed on post show and index thumbnail. Missing image renders a placeholder.
 
-- [ ] Configure ActiveStorage for local disk; run `rails active_storage:install` | agent: implementer | size: S
-- [ ] Add `has_one_attached :cover_image` to Post; add file upload field to post form | agent: implementer | size: S
-- [ ] Display cover image on post show page; show thumbnail (or placeholder) on post index | agent: implementer | size: M
-- [ ] Eager-load cover_image attachments on posts index to prevent N+1 | agent: implementer | size: S
+- [x] Configure ActiveStorage for local disk; run `rails active_storage:install` | agent: implementer | size: S
+- [x] Add `has_one_attached :cover_image` to Post; add file upload field to post form | agent: implementer | size: S
+- [x] Display cover image on post show page; show thumbnail (or placeholder) on post index | agent: implementer | size: M
+- [x] Eager-load cover_image attachments on posts index to prevent N+1 | agent: implementer | size: S
 - [ ] Reviewer M6: attachment persists, placeholder shown when absent, no N+1 on index | agent: reviewer | size: S
 
 ## Milestone 7: GitHub Issues Backlog
 Goal: ISSUES.md is complete with 20 tickets (15 core + 5 UI). Tickets filed as GitHub Issues.
 
-- [ ] Confirm ISSUES.md has all 20 tickets with tiered help blocks | agent: implementer | size: S
-- [ ] File all 20 issues on GitHub with correct labels (type + level) | agent: implementer | size: S
-- [ ] Create CODEOWNERS file assigning fictional reviewers by area | agent: implementer | size: S
-- [ ] Verify each ticket references real files from the built codebase | agent: reviewer | size: S
+- [x] Confirm ISSUES.md has all 20 tickets with tiered help blocks | agent: implementer | size: S
+- [x] File all 20 issues on GitHub with correct labels (type + level) | agent: implementer | size: S
+- [x] Create CODEOWNERS file assigning fictional reviewers by area | agent: implementer | size: S
+- [x] Verify each ticket references real files from the built codebase | agent: reviewer | size: S
 
 ## Milestone 8: Production Deployment
 Goal: The app is live on Fly.io. The learner can share a URL. CI runs tests on every PR.

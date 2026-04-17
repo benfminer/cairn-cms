@@ -1,0 +1,12 @@
+# Cairn CMS — Code Owners
+# Each line assigns a path to one or more reviewers.
+# Reviewers are notified when files in their area are changed in a PR.
+
+app/models/              @cairn/backend
+app/controllers/admin/   @cairn/admin
+app/policies/            @cairn/security
+app/views/               @cairn/frontend
+db/                      @cairn/dba
+spec/                    @cairn/qa
+config/                  @cairn/backend
+Gemfile*                 @cairn/backend
