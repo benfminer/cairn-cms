@@ -1,75 +1,84 @@
 # HANDOFF BRIEF — CAIRN CMS
-Generated: 2026-04-15
+Generated: 2026-04-16
+
+---
 
 ## What This Project Is
-A Ruby on Rails 7.2 learning environment structured as a real multi-user CMS
-(roles, publishing workflows, soft deletes, Pundit auth). The learner works GitHub
-Issues tickets on feature branches to simulate professional engineering work.
+A Rails 7.2 learning environment — a realistic multi-user CMS with roles, publishing
+workflows, and a structured ticket backlog. The learner works through GitHub Issues
+as if on a real team.
 
 ---
 
 ## Where We Are
-- **Current phase:** Planning — complete
-- **Current sprint:** Not started (no code written, no git repo initialized)
-- **Sprint deliverable:** App boots with login screen (M0)
+- **Current phase:** Active build — M0–M4 complete, M5 starting
+- **Next milestone:** M5 — Soft Deletes + Seed Data
 
 ---
 
 ## What's Been Built
-- Nothing — no git history, no Rails app yet
-- Planning artifacts only (see Key Files below)
+- M0: Rails 7.2 app, Postgres, Tailwind, Devise, seeds
+- M1: Role enum (admin/editor/author), Pundit, UserPolicy, user profiles
+- M2: Posts CRUD, ActionText body, PostPolicy with Pundit scoping
+- M3: Publishing state machine (draft→in_review→published→archived), transition
+  actions + policy gates, Admin::DashboardController with stats, admin nav link
+- M4: Category + Tag models, Tagging join table, CategoriesController + TagsController,
+  CategoryPolicy + TagPolicy (editor+ write, all read), category filter on posts
+  index, category/tag pills on post show, 10 seeded posts with 4 categories + 8 tags
+- UI redesign: Airtable-inspired design system (DESIGN.md), full Tailwind @theme tokens,
+  nav shell, Devise sign-in styled
+
+---
+
+## What's In Progress
+→ Nothing — M4 just completed, all changes uncommitted
 
 ---
 
 ## What's Next
-1. `git init` — before anything else
-2. Generate Rails 7.2 app with PostgreSQL, no default test framework — `implementer`, M0 task 1
-3. Install + configure Tailwind CSS via cssbundling-rails — `implementer`, M0 task 2
-4. Install Devise, generate User model, redirect `/` to sign-in — `implementer`, M0 task 3
+1. **M5 — Soft Deletes** (db-architect → implementer → reviewer)
+   - Add `discarded_at` datetime + index to posts (migration)
+   - Wire Discard gem: `discard!`, `undiscard!`, default scope hides discarded
+   - Switch `PostsController#destroy` to `post.discard!`
+   - Add admin-only undiscard action + trash view (`Post.only_discarded`)
+   - Extend PostPolicy: only admin can undiscard
+   - Expand seeds to 25 posts (5 discarded, 3 in_review, 10 published, 7 draft)
+
+2. **M6 — ActiveStorage Image Attachments**
+   - `has_one_attached :cover_image` on Post
+   - File upload on post form, thumbnail on index, image on show
+   - Eager-load to prevent N+1
+
+3. **M7 — GitHub Issues Backlog**
+   - Verify ISSUES.md has 20 tickets, file on GitHub with labels + CODEOWNERS
 
 ---
 
 ## Open Items & Blockers
-- Not a git repo yet — `git init` must happen before any conductor run
-- M7 tasks (file GitHub Issues, create CODEOWNERS) require a GitHub repo — defer until M6 complete
-- ISSUES.md references real file paths that don't exist yet — M7 reviewer task should run after M6
+⚠ Everything since M2 is uncommitted — large diff, commit at start of next session
+⚠ No .claude/agents/ in this project — all agents invoked from global config
 
 ---
 
-## Key Files
-| File | Purpose |
-|---|---|
-| `CLAUDE.md` | Stack, commands, seed users, architecture rules, learning workflow |
-| `PROJECT_PLAN.md` | 9 milestones (M0–M8), all tasks pending |
-| `ISSUES.md` | 20 tickets with 3-tier help system (learner's backlog post-build) |
-| `RUBRIC.md` | 5-dimension PR grading rubric (self-grade after every merge) |
-| `PROJECT_VISION.md` | Full product rationale, learning system design, decisions log |
+## Key Files to Read First
+1. `CLAUDE.md` — project conventions, what not to do, workflow rules
+2. `PROJECT_PLAN.md` — full milestone breakdown and task list
+3. `DESIGN.md` — design system tokens (required before any UI work)
+4. `db/schema.rb` — current schema (categories, tags, taggings, category_id on posts)
+5. `app/models/post.rb` — state machine + associations added in M3/M4
+6. `app/policies/post_policy.rb` — all transition + CRUD gates
 
 ---
 
 ## Agent Map
 | Agent | Role |
 |---|---|
-| `conductor` | Reads PROJECT_PLAN.md, delegates one task at a time, never codes |
-| `implementer` | All coding — frontend, backend, migrations, seeds |
-| `db-architect` | Schema design, migrations, seed data |
-| `qa` | Test writing and validation |
-| `reviewer` | Isolated code review after implementation (fresh context) |
-
----
-
-## Starting a New Session
-
-```
-Read CLAUDE.md and PROJECT_PLAN.md. Use the conductor agent to execute the next
-incomplete milestone in PROJECT_PLAN.md.
-```
-
-Conductor will delegate to the right agent, verify output, mark the task done, and stop.
-Re-invoke for the next task.
+| `implementer` | All coding — models, controllers, views, policies |
+| `db-architect` | Schema design and migrations |
+| `reviewer` | Isolated code review after each milestone (fresh context) |
+| `conductor` | Multi-step orchestration — reads plan, delegates one task at a time |
 
 ---
 
 ## Recommended Next Agent
-**`conductor`** — all planning is done and captured in files. A fresh session with a
-clean context is the right place to start M0.
+**`db-architect`** — M5 starts with the `discarded_at` migration before any model/controller work.
