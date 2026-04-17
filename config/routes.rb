@@ -1,7 +1,16 @@
 Rails.application.routes.draw do
   devise_for :users
   resources :users, only: %i[show edit update]
-  resources :posts
+  resources :categories
+  resources :tags
+  resources :posts do
+    member do
+      post :submit_for_review
+      post :publish
+      post :reject
+      post :archive
+    end
+  end
 
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
@@ -15,4 +24,8 @@ Rails.application.routes.draw do
 
   # Redirect root to sign-in page
   root to: redirect("/users/sign_in")
+
+  namespace :admin do
+    get "dashboard", to: "dashboard#show", as: :dashboard
+  end
 end

@@ -17,6 +17,11 @@ class PostPolicy < ApplicationPolicy
   def update?  = admin_or_editor? || own_post?
   def destroy? = admin_or_editor? || own_post?
 
+  def submit_for_review? = own_post? && record.draft?
+  def publish?           = admin_or_editor? && record.in_review?
+  def reject?            = admin_or_editor? && record.in_review?
+  def archive?           = admin_or_editor? && record.published?
+
   private
 
   def own_post?        = record.author_id == user.id
