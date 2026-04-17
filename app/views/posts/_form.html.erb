@@ -1,7 +1,7 @@
 <%= form_with model: post, class: "space-y-6" do |f| %>
   <% if post.errors.any? %>
-    <div class="p-4 bg-red-50 border border-red-200 rounded">
-      <ul class="list-disc list-inside text-red-700 text-sm">
+    <div class="p-4 bg-[#fef2f2] border border-[#fecaca] rounded-card text-red-700 text-sm">
+      <ul class="list-disc list-inside space-y-1">
         <% post.errors.full_messages.each do |msg| %>
           <li><%= msg %></li>
         <% end %>
@@ -10,31 +10,42 @@
   <% end %>
 
   <div>
-    <%= f.label :title, class: "block text-sm font-medium text-gray-700 mb-1" %>
+    <%= f.label :title, class: "block text-sm font-medium text-navy tracking-[0.07px] mb-1.5" %>
     <%= f.text_field :title,
-          class: "w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500",
+          class: "w-full border border-border rounded-lg px-3 py-2 text-navy text-sm focus:outline-none focus:ring-2 focus:ring-cairn/20 focus:border-cairn transition-colors",
           placeholder: "Post title" %>
   </div>
 
   <div>
-    <%= f.label :body, "Content", class: "block text-sm font-medium text-gray-700 mb-1" %>
+    <%= f.label :category_id, "Category", class: "block text-sm font-medium text-navy tracking-[0.07px] mb-1.5" %>
+    <%= f.collection_select :category_id, @form_categories, :id, :name,
+          { include_blank: "No category" },
+          class: "w-full border border-border rounded-lg px-3 py-2 text-navy text-sm focus:outline-none focus:ring-2 focus:ring-cairn/20 focus:border-cairn transition-colors" %>
+  </div>
+
+  <div>
+    <%= f.label :body, "Content", class: "block text-sm font-medium text-navy tracking-[0.07px] mb-1.5" %>
     <%= f.rich_text_area :body %>
   </div>
 
-  <% unless current_user.author? %>
+  <% if @form_tags.any? %>
     <div>
-      <%= f.label :status, class: "block text-sm font-medium text-gray-700 mb-1" %>
-      <%= f.select :status,
-            Post.statuses.keys.map { |s| [s.humanize, s] },
-            {},
-            class: "border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" %>
+      <p class="block text-sm font-medium text-navy tracking-[0.07px] mb-2">Tags</p>
+      <div class="flex flex-wrap gap-x-4 gap-y-2">
+        <%= f.collection_check_boxes :tag_ids, @form_tags, :id, :name do |b| %>
+          <label class="flex items-center gap-1.5 text-sm text-navy cursor-pointer">
+            <%= b.check_box class: "rounded border-border" %>
+            <%= b.label %>
+          </label>
+        <% end %>
+      </div>
     </div>
   <% end %>
 
-  <div class="flex gap-4">
+  <div class="flex gap-3 pt-2">
     <%= f.submit post.new_record? ? "Create Post" : "Save Changes",
-          class: "px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 cursor-pointer text-sm font-medium" %>
+          class: "px-6 py-2 bg-cairn hover:bg-cairn-hover text-white rounded-btn text-sm font-medium cursor-pointer transition-colors" %>
     <%= link_to "Cancel", post.new_record? ? posts_path : post_path(post),
-          class: "px-4 py-2 border border-gray-300 rounded hover:bg-gray-50 text-sm" %>
+          class: "px-4 py-2 border border-border text-navy hover:bg-surface rounded-btn text-sm transition-colors" %>
   </div>
 <% end %>

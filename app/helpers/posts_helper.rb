@@ -1,9 +1,9 @@
 module PostsHelper
   STATUS_BADGE_CLASSES = {
-    "draft"     => "bg-gray-100 text-gray-700",
-    "in_review" => "bg-yellow-100 text-yellow-800",
-    "published" => "bg-green-100 text-green-800",
-    "archived"  => "bg-red-100 text-red-700"
+    "draft"     => "bg-[#f1f5f9] text-[#475569]",
+    "in_review" => "bg-[#fef9c3] text-[#854d0e]",
+    "published" => "bg-[#dcfce7] text-[#166534]",
+    "archived"  => "bg-[#f1f5f9] text-[rgba(4,14,32,0.50)]"
   }.freeze
 
   def status_badge_classes(status)

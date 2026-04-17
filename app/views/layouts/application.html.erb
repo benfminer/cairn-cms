@@ -18,9 +18,51 @@
     <%= javascript_importmap_tags %>
   </head>
 
-  <body>
-    <p class="notice"><%= notice %></p>
-    <p class="alert"><%= alert %></p>
-    <%= yield %>
+  <body class="bg-white text-navy font-sans min-h-screen">
+
+    <nav class="bg-white border-b border-border">
+      <div class="max-w-5xl mx-auto px-6 h-14 flex items-center justify-between">
+        <%= link_to "Cairn", root_path, class: "text-navy font-semibold text-base tracking-[-0.1px]" %>
+
+        <div class="flex items-center gap-6">
+          <% if user_signed_in? %>
+            <% if current_user.admin? %>
+              <%= link_to "Dashboard", admin_dashboard_path,
+                    class: "text-sm font-medium text-navy/70 hover:text-cairn transition-colors" %>
+            <% end %>
+            <% if current_user.admin? || current_user.editor? %>
+              <%= link_to "Categories", categories_path,
+                    class: "text-sm font-medium text-navy/70 hover:text-cairn transition-colors" %>
+            <% end %>
+            <%= link_to "Posts", posts_path,
+                  class: "text-sm font-medium text-navy/70 hover:text-cairn transition-colors" %>
+            <%= link_to "Profile", user_path(current_user),
+                  class: "text-sm font-medium text-navy/70 hover:text-cairn transition-colors" %>
+            <span class="bg-surface border border-border text-xs text-navy/60 px-2 py-0.5 rounded-full capitalize">
+              <%= current_user.role %>
+            </span>
+            <%= link_to "Sign out", destroy_user_session_path, data: { turbo_method: :delete },
+                  class: "text-sm text-navy/50 hover:text-navy transition-colors" %>
+          <% end %>
+        </div>
+      </div>
+    </nav>
+
+    <% if notice.present? %>
+      <div class="bg-[#f0fdf4] border-b border-[#bbf7d0] text-[#166534] text-sm px-6 py-3 flex items-center justify-between max-w-5xl mx-auto mt-4 rounded-card" id="flash-notice">
+        <span><%= notice %></span>
+      </div>
+    <% end %>
+
+    <% if alert.present? %>
+      <div class="bg-[#fef9c3] border-b border-[#fde68a] text-[#854d0e] text-sm px-6 py-3 flex items-center justify-between max-w-5xl mx-auto mt-4 rounded-card" id="flash-alert">
+        <span><%= alert %></span>
+      </div>
+    <% end %>
+
+    <main class="max-w-5xl mx-auto px-6 py-10">
+      <%= yield %>
+    </main>
+
   </body>
 </html>

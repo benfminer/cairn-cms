@@ -1,1 +1,25 @@
 @import "tailwindcss";
+
+@theme {
+  --color-navy:        #181d26;
+  --color-cairn:       #1b61c9;
+  --color-cairn-hover: #254fad;
+  --color-border:      #e0e2e6;
+  --color-surface:     #f8fafc;
+  --color-text-weak:   rgba(4, 14, 32, 0.69);
+  --font-sans: Haas, -apple-system, system-ui, "Segoe UI", Roboto, sans-serif;
+  --radius-btn:  12px;
+  --radius-card: 16px;
+  --radius-lg:   24px;
+  --shadow-card: rgba(0,0,0,0.32) 0px 0px 1px, rgba(0,0,0,0.08) 0px 0px 2px,
+                 rgba(45,127,249,0.28) 0px 1px 3px, rgba(0,0,0,0.06) 0px 0px 0px 0.5px inset;
+}
+
+@layer base {
+  body {
+    font-family: var(--font-sans);
+    color: var(--color-navy);
+    letter-spacing: 0.08px;
+    background-color: #ffffff;
+  }
+}

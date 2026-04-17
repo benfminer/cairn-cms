@@ -1,28 +1,70 @@
 <% content_for :title, @post.title %>
 
-<div class="max-w-3xl mx-auto mt-10 px-4">
-  <div class="mb-4 flex items-center gap-3">
-    <span class="<%= status_badge_classes(@post.status) %> px-2 py-1 rounded-full text-xs font-semibold">
+<div class="max-w-3xl mx-auto">
+  <div class="mb-5 flex items-center gap-3">
+    <span class="<%= status_badge_classes(@post.status) %> px-2.5 py-1 rounded-full text-xs font-medium">
       <%= @post.status.humanize %>
     </span>
-    <span class="text-sm text-gray-500">
-      by <%= @post.author.email %> &middot;
-      <%= @post.created_at.strftime("%B %-d, %Y") %>
+    <span class="text-sm text-text-weak">
+      by <%= @post.author.email %> &middot; <%= @post.created_at.strftime("%B %-d, %Y") %>
     </span>
   </div>
 
-  <h1 class="text-3xl font-bold text-gray-900 mb-6"><%= @post.title %></h1>
+  <% if @post.category.present? || @post.tags.any? %>
+    <div class="flex flex-wrap items-center gap-2 mb-5">
+      <% if @post.category.present? %>
+        <span class="text-xs font-medium text-cairn bg-[#eff6ff] px-2.5 py-1 rounded-full border border-[#bfdbfe]">
+          <%= @post.category.name %>
+        </span>
+      <% end %>
+      <% @post.tags.each do |tag| %>
+        <span class="text-xs text-navy/60 bg-surface border border-border px-2.5 py-1 rounded-full">
+          <%= tag.name %>
+        </span>
+      <% end %>
+    </div>
+  <% end %>
 
-  <div class="prose max-w-none text-gray-800">
+  <h1 class="text-3xl font-semibold text-navy tracking-[-0.3px] mb-8"><%= @post.title %></h1>
+
+  <div class="prose max-w-none text-navy/80 leading-relaxed">
     <%= @post.body %>
   </div>
 
-  <div class="mt-8 flex gap-3">
+  <% if policy(@post).submit_for_review? || policy(@post).publish? || policy(@post).reject? || policy(@post).archive? %>
+    <div class="mt-10 pt-6 border-t border-border flex flex-wrap gap-3">
+      <% if policy(@post).submit_for_review? %>
+        <%= button_to "Submit for Review", submit_for_review_post_path(@post), method: :post,
+              class: "bg-cairn hover:bg-cairn-hover text-white px-4 py-2 rounded-btn text-sm font-medium transition-colors",
+              form: { class: "inline" } %>
+      <% end %>
+      <% if policy(@post).publish? %>
+        <%= button_to "Publish", publish_post_path(@post), method: :post,
+              class: "bg-[#166534] hover:bg-[#14532d] text-white px-4 py-2 rounded-btn text-sm font-medium transition-colors",
+              form: { class: "inline" },
+              data: { turbo_confirm: "Publish this post? It will be visible to all readers." } %>
+      <% end %>
+      <% if policy(@post).reject? %>
+        <%= button_to "Return to Draft", reject_post_path(@post), method: :post,
+              class: "bg-[#fef9c3] hover:bg-[#fef08a] text-[#854d0e] border border-[#fde68a] px-4 py-2 rounded-btn text-sm font-medium transition-colors",
+              form: { class: "inline" },
+              data: { turbo_confirm: "Return this post to draft?" } %>
+      <% end %>
+      <% if policy(@post).archive? %>
+        <%= button_to "Archive", archive_post_path(@post), method: :post,
+              class: "bg-surface hover:bg-[#e2e8f0] text-navy border border-border px-4 py-2 rounded-btn text-sm font-medium transition-colors",
+              form: { class: "inline" },
+              data: { turbo_confirm: "Archive this post?" } %>
+      <% end %>
+    </div>
+  <% end %>
+
+  <div class="mt-6 pt-6 border-t border-border flex gap-3">
     <% if policy(@post).update? %>
       <%= link_to "Edit", edit_post_path(@post),
-            class: "px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 text-sm" %>
+            class: "px-4 py-2 bg-cairn hover:bg-cairn-hover text-white rounded-btn text-sm font-medium transition-colors" %>
     <% end %>
     <%= link_to "Back to Posts", posts_path,
-          class: "px-4 py-2 border border-gray-300 rounded hover:bg-gray-50 text-sm" %>
+          class: "px-4 py-2 border border-border text-navy hover:bg-surface rounded-btn text-sm transition-colors" %>
   </div>
 </div>

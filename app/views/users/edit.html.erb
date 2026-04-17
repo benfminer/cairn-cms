@@ -1,12 +1,12 @@
 <% content_for :title, "Edit Profile" %>
 
-<div class="max-w-lg mx-auto mt-10 p-6 bg-white rounded shadow">
-  <h1 class="text-2xl font-bold mb-4">Edit Profile</h1>
+<div class="max-w-lg mx-auto bg-white border border-border rounded-card shadow-card p-8">
+  <h1 class="text-xl font-semibold text-navy tracking-[-0.1px] mb-6">Edit Profile</h1>
 
   <%= form_with model: @user, url: user_path(@user), method: :patch do |f| %>
     <% if @user.errors.any? %>
-      <div class="mb-4 p-4 bg-red-50 border border-red-200 rounded">
-        <ul class="list-disc list-inside text-red-700 text-sm">
+      <div class="mb-5 p-4 bg-[#fef2f2] border border-[#fecaca] rounded-card text-red-700 text-sm">
+        <ul class="list-disc list-inside space-y-1">
           <% @user.errors.full_messages.each do |msg| %>
             <li><%= msg %></li>
           <% end %>
@@ -14,18 +14,18 @@
       </div>
     <% end %>
 
-    <div class="mb-4">
-      <%= f.label :email, class: "block text-sm font-medium text-gray-700 mb-1" %>
+    <div class="mb-6">
+      <%= f.label :email, class: "block text-sm font-medium text-navy tracking-[0.07px] mb-1.5" %>
       <%= f.email_field :email,
-            class: "w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500",
+            class: "w-full border border-border rounded-lg px-3 py-2 text-navy text-sm focus:outline-none focus:ring-2 focus:ring-cairn/20 focus:border-cairn transition-colors",
             autocomplete: "email" %>
     </div>
 
-    <div class="flex gap-4">
+    <div class="flex gap-3">
       <%= f.submit "Save Changes",
-            class: "px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 cursor-pointer" %>
+            class: "px-6 py-2 bg-cairn hover:bg-cairn-hover text-white rounded-btn text-sm font-medium cursor-pointer transition-colors" %>
       <%= link_to "Cancel", user_path(@user),
-            class: "px-4 py-2 border border-gray-300 rounded hover:bg-gray-50" %>
+            class: "px-4 py-2 border border-border text-navy hover:bg-surface rounded-btn text-sm transition-colors" %>
     </div>
   <% end %>
 </div>
