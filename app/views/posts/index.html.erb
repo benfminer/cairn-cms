@@ -26,6 +26,7 @@
     <table class="min-w-full divide-y divide-border text-sm">
       <thead class="bg-surface">
         <tr>
+          <th class="px-5 py-3 text-left text-xs font-semibold text-navy/60 uppercase tracking-[0.07px]">Cover</th>
           <th class="px-5 py-3 text-left text-xs font-semibold text-navy/60 uppercase tracking-[0.07px]">Title</th>
           <th class="px-5 py-3 text-left text-xs font-semibold text-navy/60 uppercase tracking-[0.07px]">Status</th>
           <th class="px-5 py-3 text-left text-xs font-semibold text-navy/60 uppercase tracking-[0.07px]">Author</th>
@@ -36,6 +37,13 @@
       <tbody class="divide-y divide-border bg-white">
         <% @posts.each do |post| %>
           <tr class="hover:bg-surface transition-colors">
+            <td class="px-5 py-3.5">
+              <% if post.cover_image.attached? %>
+                <%= image_tag post.cover_image.variant(resize_to_fill: [60, 40]), class: "rounded" %>
+              <% else %>
+                <div class="w-[60px] h-[40px] bg-gray-100 rounded"></div>
+              <% end %>
+            </td>
             <td class="px-5 py-3.5 font-medium">
               <%= link_to post.title, post_path(post),
                     class: "text-navy hover:text-cairn transition-colors" %>

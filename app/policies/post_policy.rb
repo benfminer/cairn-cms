@@ -21,6 +21,7 @@ class PostPolicy < ApplicationPolicy
   def publish?           = admin_or_editor? && record.in_review?
   def reject?            = admin_or_editor? && record.in_review?
   def archive?           = admin_or_editor? && record.published?
+  def undiscard?         = user.admin?
 
   private
 

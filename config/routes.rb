@@ -9,6 +9,7 @@ Rails.application.routes.draw do
       post :publish
       post :reject
       post :archive
+      post :undiscard
     end
   end
 

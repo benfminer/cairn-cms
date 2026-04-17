@@ -1,6 +1,7 @@
 class PostsController < ApplicationController
   before_action :authenticate_user!
   before_action :set_post, only: %i[show edit update destroy submit_for_review publish reject archive]
+  before_action :set_post_including_discarded, only: :undiscard
 
   # index uses policy_scope — swap verify_authorized for verify_policy_scoped
   skip_after_action :verify_authorized,    only: :index
@@ -10,6 +11,7 @@ class PostsController < ApplicationController
     @categories = policy_scope(Category).order(:name)
     @selected_category = params[:category_id]
     @posts = policy_scope(Post).with_rich_text_body
+                               .with_attached_cover_image
                                .includes(:author)
                                .order(created_at: :desc)
     @posts = @posts.where(category_id: params[:category_id]) if params[:category_id].present?
@@ -56,8 +58,14 @@ class PostsController < ApplicationController
 
   def destroy
     authorize @post
-    @post.destroy
-    redirect_to posts_path, notice: "Post deleted."
+    @post.discard!
+    redirect_to posts_path, notice: "Post discarded."
+  end
+
+  def undiscard
+    authorize @post
+    @post.undiscard!
+    redirect_to @post, notice: "Post restored."
   end
 
   def submit_for_review
@@ -96,12 +104,16 @@ class PostsController < ApplicationController
 
   def set_post = @post = Post.includes(:category, :tags).find(params[:id])
 
+  def set_post_including_discarded
+    @post = Post.unscope(where: :discarded_at).includes(:category, :tags).find(params[:id])
+  end
+
   def load_form_collections
     @form_categories = policy_scope(Category).order(:name)
     @form_tags       = policy_scope(Tag).order(:name)
   end
 
   def post_params
-    params.require(:post).permit(:title, :body, :category_id, tag_ids: [])
+    params.require(:post).permit(:title, :body, :category_id, :cover_image, tag_ids: [])
   end
 end

@@ -25,6 +25,10 @@
     </div>
   <% end %>
 
+  <% if @post.cover_image.attached? %>
+    <%= image_tag @post.cover_image.variant(resize_to_limit: [1200, 630]), class: "w-full rounded-lg mb-6 object-cover max-h-64" %>
+  <% end %>
+
   <h1 class="text-3xl font-semibold text-navy tracking-[-0.3px] mb-8"><%= @post.title %></h1>
 
   <div class="prose max-w-none text-navy/80 leading-relaxed">

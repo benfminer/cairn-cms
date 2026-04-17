@@ -2,17 +2,23 @@
 #
 # Table name: posts
 #
-#  id         :bigint           not null, primary key
-#  title      :string           not null
-#  status     :integer          default("draft"), not null
-#  author_id  :bigint           not null
-#  created_at :datetime         not null
-#  updated_at :datetime         not null
+#  id           :bigint           not null, primary key
+#  title        :string           not null
+#  status       :integer          default("draft"), not null
+#  author_id    :bigint           not null
+#  created_at   :datetime         not null
+#  updated_at   :datetime         not null
+#  category_id  :bigint
+#  discarded_at :datetime
 #
 class Post < ApplicationRecord
+  default_scope { where(discarded_at: nil) }
+
   belongs_to :author, class_name: "User"
 
   has_rich_text :body
+
+  has_one_attached :cover_image
 
   belongs_to :category, optional: true
   has_many :taggings, dependent: :destroy
@@ -42,5 +48,17 @@ class Post < ApplicationRecord
   def archive!
     raise InvalidTransition, "Post must be published to archive" unless published?
     update!(status: :archived)
+  end
+
+  def discard!
+    update!(discarded_at: Time.current)
+  end
+
+  def undiscard!
+    update!(discarded_at: nil)
+  end
+
+  def discarded?
+    discarded_at.present?
   end
 end

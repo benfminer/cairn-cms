@@ -1,4 +1,4 @@
-<%= form_with model: post, class: "space-y-6" do |f| %>
+<%= form_with model: post, class: "space-y-6", multipart: true do |f| %>
   <% if post.errors.any? %>
     <div class="p-4 bg-[#fef2f2] border border-[#fecaca] rounded-card text-red-700 text-sm">
       <ul class="list-disc list-inside space-y-1">
@@ -41,6 +41,12 @@
       </div>
     </div>
   <% end %>
+
+  <div>
+    <%= f.label :cover_image, "Cover Image", class: "block text-sm font-medium text-navy tracking-[0.07px] mb-1.5" %>
+    <%= f.file_field :cover_image, accept: "image/*",
+          class: "block w-full text-sm text-navy file:mr-4 file:py-2 file:px-4 file:rounded-btn file:border-0 file:text-sm file:font-medium file:bg-surface file:text-navy hover:file:bg-border cursor-pointer" %>
+  </div>
 
   <div class="flex gap-3 pt-2">
     <%= f.submit post.new_record? ? "Create Post" : "Save Changes",
