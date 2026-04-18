@@ -2,7 +2,7 @@ class PostPolicy < ApplicationPolicy
   class Scope < ApplicationPolicy::Scope
     def resolve
       if user.admin? || user.editor?
-        scope.all
+        scope.unscoped
       else
         scope.where(author_id: user.id)
       end

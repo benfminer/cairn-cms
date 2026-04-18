@@ -80,7 +80,7 @@ Goal: Posts can have a cover image. Image is displayed on post show and index th
 - [x] Add `has_one_attached :cover_image` to Post; add file upload field to post form | agent: implementer | size: S
 - [x] Display cover image on post show page; show thumbnail (or placeholder) on post index | agent: implementer | size: M
 - [x] Eager-load cover_image attachments on posts index to prevent N+1 | agent: implementer | size: S
-- [ ] Reviewer M6: attachment persists, placeholder shown when absent, no N+1 on index | agent: reviewer | size: S
+- [x] Reviewer M6: attachment persists, placeholder shown when absent, no N+1 on index | agent: reviewer | size: S
 
 ## Milestone 7: GitHub Issues Backlog
 Goal: ISSUES.md is complete with 20 tickets (15 core + 5 UI). Tickets filed as GitHub Issues.

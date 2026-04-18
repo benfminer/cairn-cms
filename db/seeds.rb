@@ -37,7 +37,7 @@ puts "Seeding tags..."
 
 tag_names = %w[rails ruby hotwire tailwind postgres pundit devops testing]
 tags = tag_names.map do |name|
-  tag = Tag.find_or_create_by!(name: name)
+  tag = Tag.create!(name: name)
   puts "  #{tag.name}"
   tag
 end
